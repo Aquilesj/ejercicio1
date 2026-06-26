@@ -1,0 +1,23 @@
+#!/bin/sh
+
+echo "HOLA"
+echo "=== ESTADO DE SALUD DEL CONTENEDOR LOCAL ==="
+echo "----------------------------------------------"
+
+# Verificar si el proceso principal sigue activo
+if ps -o pid,comm | grep -q "1 "; then
+    echo "Estado: 🟢 Corriendo"
+else
+    echo "Estado: 🔴 Fallando"
+fi
+
+# Verificar el uso de recursos internos
+uptime_data=$(uptime)
+echo "Tiempo activo y carga:${uptime_data#*up}"
+
+# Verificar memoria libre en Alpine
+free -h | awk 'NR==2 {print "Memoria RAM: Usada " $3 " / Total " $2}'
+
+# Verificar espacio en disco del contenedor
+df -h / | awk 'NR==2 {print "Espacio Disco: Usado " $3 " (" $5 ") disponible " $4}'
+echo "----------------------------------------------"
